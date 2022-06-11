@@ -57,7 +57,7 @@ def command(cmd : str, db):
                 with open(i) as f:
                     if db.find_one({"filename": i}):
                         db.delete_one({"filename": i})
-                        print("Overided file {}".format(i))
+                        print(" Overided file {}".format(i))
                     package.append({
                         "filename": i,
                         "contents": f.read()

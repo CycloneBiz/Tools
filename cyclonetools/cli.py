@@ -1,5 +1,6 @@
 import pymongo
 from tqdm import tqdm
+import os
 
 def main():
     print("Welcome to Cyclone Tools...\nCurrently OpenLoop only supports a URI string, not a certificate")
@@ -22,10 +23,7 @@ def main():
     print("Welcome to the CLI enviroment!\nCurrently, the enviroment does not support spaces in file names.")
     working = True
     while working:
-        try:
-            working = command(input(">>> "), database)
-        except:
-            print("A error occured")
+        working = command(input(">>> "), database)
 
 def command(cmd : str, db):
     cmd = cmd.split()
@@ -49,12 +47,21 @@ def command(cmd : str, db):
             print(i["filename"])
     elif cmd[0] == "up":
         package = []
+        if len(cmd) >= 2 and cmd[1] == "*":
+            for i in os.listdir():
+                if not i.startswith("."):
+                    if i.count(".") == 1:
+                        cmd.append(i)
         for i in tqdm(cmd[1:], desc="Packing"):
-            with open(i) as f:
-                package.append({
-                    "filename": i,
-                    "contents": f.read()
-                })
+            if i!="*":
+                with open(i) as f:
+                    if db.find_one({"filename": i}):
+                        db.delete_one({"filename": i})
+                        print(f"Overided file {i}")
+                    package.append({
+                        "filename": i,
+                        "contents": f.read()
+                    })
         db.insert_many(package)
         print("Upload Finished")
 

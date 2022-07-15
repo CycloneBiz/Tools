@@ -64,6 +64,21 @@ def command(cmd : str, db):
                     })
         db.insert_many(package)
         print("Upload Finished")
+    elif cmd[0] == "down" and len(cmd)==2:
+        if cmd[1] == "*":
+            files = list(db.find())
+        else:
+            files = list(db.find({"filename": cmd[1]}))
+        
+        if cmd[1]=="*" and files==[]:
+            print("No plugins in Mongo")
+        elif files==[]:
+            print("Plugin does not exist")
+        else:
+            for i in files:
+                with open(i["filename"], "w") as f:
+                    f.write(i["contents"])
+            print("Completed download")
 
     elif cmd[0] == "exit":
         print("Exiting...")

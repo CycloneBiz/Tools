@@ -11,7 +11,7 @@ with open("README.md") as f:
 setuptools.setup(
     name="cyclonetools",
  
-    version="1.0",
+    version="1.1",
  
     author="Cyclone Communications",
  
